@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import plotly.graph_objs as go
 from datetime import datetime
+import time
 
 # Blynk configuration
 BLYNK_AUTH_TOKEN = "_Tx2yYYTCFm4Q0tzfLZmc_87QBkEdxYt"  # Replace with your Blynk token
@@ -34,11 +35,16 @@ st.title("Blynk Data Fetcher")
 
 st.write("Fetching data from Blynk...")
 
-# Automatically refresh the app every 10 seconds (can be adjusted)
-st.autorefresh(interval=10 * 1000, key="data_refresh")
+# Auto-refresh logic
+if 'last_fetch_time' not in st.session_state:
+    st.session_state.last_fetch_time = time.time()
 
-# Fetch new data
-blynk_value = fetch_blynk_data()  # Fetch new data on each refresh
+# Check if it's time to refresh data
+if time.time() - st.session_state.last_fetch_time > 10:  # Refresh every 10 seconds
+    st.session_state.last_fetch_time = time.time()
+    blynk_value = fetch_blynk_data()  # Fetch new data when time is up
+else:
+    blynk_value = None  # Do not fetch data if not time yet
 
 # Display the fetched value
 if blynk_value is not None:
@@ -66,7 +72,7 @@ if blynk_value is not None:
     except ValueError:
         st.write("Invalid data received from Blynk, unable to convert to float.")
 else:
-    st.write("Failed to fetch data from Blynk.")
+    st.write("Waiting for data...")
 
 # Gauge Display
 if not st.session_state.data_df.empty:
@@ -84,3 +90,7 @@ if len(st.session_state.data_df) > 1:
                       showlegend=True,
                       xaxis_tickangle=-45)  # Rotate x-axis labels for better readability
     st.plotly_chart(fig)
+
+# Manual refresh button (if needed)
+if st.button("Refresh Now"):
+    st.experimental_rerun()
