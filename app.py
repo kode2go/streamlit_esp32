@@ -2,11 +2,11 @@ import streamlit as st
 import requests
 
 # Blynk configuration
-BLYNK_AUTH_TOKEN = "2wzUwRv1MrP_-OarfCkzZ6R39EC76pa1" # Replace with your Blynk token
-BLYNK_VPIN = "v4"  # The virtual pin you're using
+BLYNK_AUTH_TOKEN = "_Tx2yYYTCFm4Q0tzfLZmc_87QBkEdxYt" # Replace with your Blynk token
+BLYNK_VPIN = "V4"  # The virtual pin you're using
 
 def fetch_blynk_data():
-    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&vpin={BLYNK_VPIN}"
+    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&{BLYNK_VPIN}"
     try:
         response = requests.get(url)
         # Debugging output: print status code and content
