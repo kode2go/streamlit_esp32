@@ -1,13 +1,15 @@
 import streamlit as st
 import requests
-import plotly.graph_objs as go # test
+import plotly.graph_objs as go
+from datetime import datetime
 
 # Blynk configuration
 BLYNK_AUTH_TOKEN = "_Tx2yYYTCFm4Q0tzfLZmc_87QBkEdxYt"  # Replace with your Blynk token
 BLYNK_VPIN = "V4"  # The virtual pin you're using
 
-# List to store fetched values for plotting
+# Lists to store fetched values and their corresponding timestamps for plotting
 fetched_values = []
+timestamps = []
 
 def fetch_blynk_data():
     url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&{BLYNK_VPIN}"
@@ -40,9 +42,10 @@ else:
 # Display the fetched value
 if blynk_value is not None:
     st.write(f"Value from Blynk (V4): {blynk_value}")
-    # Store the fetched value for plotting
+    # Store the fetched value and the current timestamp for plotting
     try:
         fetched_values.append(float(blynk_value))  # Convert to float for the gauge and plot
+        timestamps.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))  # Store current timestamp
     except ValueError:
         st.write("Invalid data received from Blynk, unable to convert to float.")
 else:
@@ -57,10 +60,11 @@ if fetched_values:
 if len(fetched_values) > 1:
     st.subheader("Value Trend")
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=list(range(len(fetched_values))), y=fetched_values, mode='lines+markers', name='Blynk Value'))
+    fig.add_trace(go.Scatter(x=timestamps, y=fetched_values, mode='lines+markers', name='Blynk Value'))
     fig.update_layout(title='Blynk Value Over Time',
-                      xaxis_title='Fetch Number',
+                      xaxis_title='Timestamp',
                       yaxis_title='Value',
-                      showlegend=True)
+                      showlegend=True,
+                      xaxis_tickangle=-45)  # Rotate x-axis labels for better readability
     st.plotly_chart(fig)
 
