@@ -34,11 +34,11 @@ st.title("Blynk Data Fetcher")
 
 st.write("Fetching data from Blynk...")
 
-# Add a refresh button
-if st.button('Refresh'):
-    blynk_value = fetch_blynk_data()  # Fetch new data when button is pressed
-else:
-    blynk_value = fetch_blynk_data()  # Initial fetch on app load
+# Automatically refresh the app every 10 seconds (can be adjusted)
+st.autorefresh(interval=10 * 1000, key="data_refresh")
+
+# Fetch new data
+blynk_value = fetch_blynk_data()  # Fetch new data on each refresh
 
 # Display the fetched value
 if blynk_value is not None:
