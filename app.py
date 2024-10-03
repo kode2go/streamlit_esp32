@@ -20,13 +20,14 @@ st.title("Blynk Data Fetcher")
 
 st.write("Fetching data from Blynk...")
 
-blynk_value = fetch_blynk_data()
+# Add a refresh button
+if st.button('Refresh'):
+    blynk_value = fetch_blynk_data()  # Fetch new data when button is pressed
+else:
+    blynk_value = fetch_blynk_data()  # Initial fetch on app load
 
+# Display the fetched value
 if blynk_value is not None:
     st.write(f"Value from Blynk (V4): {blynk_value}")
 else:
     st.write("Failed to fetch data from Blynk.")
-
-# Optionally, add a refresh button
-if st.button('Refresh'):
-    st.experimental_rerun()
