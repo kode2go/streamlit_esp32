@@ -40,7 +40,7 @@ if 'last_fetch_time' not in st.session_state:
     st.session_state.last_fetch_time = time.time()
 
 # Check if it's time to refresh data
-if time.time() - st.session_state.last_fetch_time > 10:  # Refresh every 10 seconds
+if time.time() - st.session_state.last_fetch_time > 1:  # Refresh every 10 seconds
     st.session_state.last_fetch_time = time.time()
     blynk_value = fetch_blynk_data()  # Fetch new data when time is up
 else:
@@ -93,4 +93,4 @@ if len(st.session_state.data_df) > 1:
 
 # Manual refresh button (if needed)
 if st.button("Refresh Now"):
-    st.experimental_rerun()
+    st.rerun()  # Change made here
