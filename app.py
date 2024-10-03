@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import pandas as pd
 import plotly.graph_objs as go
 from datetime import datetime
 
@@ -7,9 +8,8 @@ from datetime import datetime
 BLYNK_AUTH_TOKEN = "_Tx2yYYTCFm4Q0tzfLZmc_87QBkEdxYt"  # Replace with your Blynk token
 BLYNK_VPIN = "V4"  # The virtual pin you're using
 
-# Lists to store fetched values and their corresponding timestamps for plotting
-fetched_values = []
-timestamps = []
+# DataFrame to store fetched values and timestamps
+data_df = pd.DataFrame(columns=["Timestamp", "Value"])
 
 def fetch_blynk_data():
     url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&{BLYNK_VPIN}"
@@ -42,14 +42,21 @@ else:
 # Display the fetched value
 if blynk_value is not None:
     st.write(f"Value from Blynk (V4): {blynk_value}")
-    # Store the fetched value and the current timestamp for plotting
+    # Store the fetched value and the current timestamp for DataFrame
     try:
-        fetched_values.append(float(blynk_value))  # Convert to float for the gauge and plot
+        value_float = float(blynk_value)  # Convert to float for the gauge and DataFrame
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Store current timestamp
-        timestamps.append(current_time)
         
+        # Append new data to the DataFrame
+        new_row = pd.DataFrame({"Timestamp": [current_time], "Value": [value_float]})
+        data_df = pd.concat([data_df, new_row], ignore_index=True)
+        
+        # Display the DataFrame
+        st.subheader("Captured Data")
+        st.dataframe(data_df)
+
         # Create a string to display all timestamps and values
-        all_data = "\n".join(f"Timestamp: {ts}, Value: {val}" for ts, val in zip(timestamps, fetched_values))
+        all_data = "\n".join(f"Timestamp: {ts}, Value: {val}" for ts, val in zip(data_df['Timestamp'], data_df['Value']))
         
         # Display in text area
         st.text_area("Captured Timestamps and Values", 
@@ -61,15 +68,15 @@ else:
     st.write("Failed to fetch data from Blynk.")
 
 # Gauge Display
-if fetched_values:
+if not data_df.empty:
     st.subheader("Gauge")
-    st.metric(label="Blynk Value", value=fetched_values[-1])  # Display the latest value as a gauge
+    st.metric(label="Blynk Value", value=data_df['Value'].iloc[-1])  # Display the latest value as a gauge
 
 # Plotting the values using Plotly
-if len(fetched_values) > 1:
+if len(data_df) > 1:
     st.subheader("Value Trend")
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=timestamps, y=fetched_values, mode='lines+markers', name='Blynk Value'))
+    fig.add_trace(go.Scatter(x=data_df['Timestamp'], y=data_df['Value'], mode='lines+markers', name='Blynk Value'))
     fig.update_layout(title='Blynk Value Over Time',
                       xaxis_title='Timestamp',
                       yaxis_title='Value',
