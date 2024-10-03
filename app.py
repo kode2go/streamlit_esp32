@@ -12,7 +12,7 @@ fetched_values = []
 timestamps = []
 
 def fetch_blynk_data():
-    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&vpin={BLYNK_VPIN}"
+    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&{BLYNK_VPIN}"
     try:
         response = requests.get(url)
         # Debugging output: print status code and content
