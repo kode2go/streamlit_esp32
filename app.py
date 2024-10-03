@@ -12,7 +12,7 @@ fetched_values = []
 timestamps = []
 
 def fetch_blynk_data():
-    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&{BLYNK_VPIN}"
+    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&vpin={BLYNK_VPIN}"
     try:
         response = requests.get(url)
         # Debugging output: print status code and content
@@ -48,10 +48,13 @@ if blynk_value is not None:
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Store current timestamp
         timestamps.append(current_time)
         
+        # Create a string to display all timestamps and values
+        all_data = "\n".join(f"Timestamp: {ts}, Value: {val}" for ts, val in zip(timestamps, fetched_values))
+        
         # Display in text area
-        st.text_area("Latest Timestamp and Value", 
-                      f"Timestamp: {current_time}\nValue: {blynk_value}", 
-                      height=100)
+        st.text_area("Captured Timestamps and Values", 
+                      all_data, 
+                      height=300)
     except ValueError:
         st.write("Invalid data received from Blynk, unable to convert to float.")
 else:
@@ -73,4 +76,3 @@ if len(fetched_values) > 1:
                       showlegend=True,
                       xaxis_tickangle=-45)  # Rotate x-axis labels for better readability
     st.plotly_chart(fig)
-
