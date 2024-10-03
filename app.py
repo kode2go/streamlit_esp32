@@ -45,7 +45,13 @@ if blynk_value is not None:
     # Store the fetched value and the current timestamp for plotting
     try:
         fetched_values.append(float(blynk_value))  # Convert to float for the gauge and plot
-        timestamps.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))  # Store current timestamp
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Store current timestamp
+        timestamps.append(current_time)
+        
+        # Display in text area
+        st.text_area("Latest Timestamp and Value", 
+                      f"Timestamp: {current_time}\nValue: {blynk_value}", 
+                      height=100)
     except ValueError:
         st.write("Invalid data received from Blynk, unable to convert to float.")
 else:
