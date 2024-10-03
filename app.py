@@ -3,7 +3,7 @@ import requests
 
 # Blynk configuration
 BLYNK_AUTH_TOKEN = "2wzUwRv1MrP_-OarfCkzZ6R39EC76pa1" # Replace with your Blynk token
-BLYNK_VPIN = "V1"  # The virtual pin you're using
+BLYNK_VPIN = "v4"  # The virtual pin you're using
 
 def fetch_blynk_data():
     url = f"https://blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&vpin={BLYNK_VPIN}"
