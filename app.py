@@ -5,14 +5,21 @@ import requests
 BLYNK_AUTH_TOKEN = "2wzUwRv1MrP_-OarfCkzZ6R39EC76pa1" # Replace with your Blynk token
 BLYNK_VPIN = "V4"  # The virtual pin you're using
 
-# Fetch data from Blynk cloud
 def fetch_blynk_data():
     url = f"https://blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&vpin={BLYNK_VPIN}"
-    response = requests.get(url)
-    
-    if response.status_code == 200:
-        return response.text
-    else:
+    try:
+        response = requests.get(url)
+        # Debugging output: print status code and content
+        st.write(f"Status code: {response.status_code}")
+        st.write(f"Response content: {response.text}")
+        
+        if response.status_code == 200:
+            return response.text
+        else:
+            return None
+    except Exception as e:
+        # Debugging output: print exception
+        st.write(f"Error occurred: {e}")
         return None
 
 # Streamlit UI
