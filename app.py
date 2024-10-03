@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-import matplotlib.pyplot as plt
+import plotly.graph_objs as go
 
 # Blynk configuration
 BLYNK_AUTH_TOKEN = "_Tx2yYYTCFm4Q0tzfLZmc_87QBkEdxYt"  # Replace with your Blynk token
@@ -53,14 +53,14 @@ if fetched_values:
     st.subheader("Gauge")
     st.metric(label="Blynk Value", value=fetched_values[-1])  # Display the latest value as a gauge
 
-# Plotting the values
+# Plotting the values using Plotly
 if len(fetched_values) > 1:
     st.subheader("Value Trend")
-    plt.figure(figsize=(10, 5))
-    plt.plot(fetched_values, marker='o')
-    plt.title("Blynk Value Over Time")
-    plt.xlabel("Fetch Number")
-    plt.ylabel("Value")
-    plt.grid()
-    st.pyplot(plt)
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=list(range(len(fetched_values))), y=fetched_values, mode='lines+markers', name='Blynk Value'))
+    fig.update_layout(title='Blynk Value Over Time',
+                      xaxis_title='Fetch Number',
+                      yaxis_title='Value',
+                      showlegend=True)
+    st.plotly_chart(fig)
 
