@@ -43,6 +43,7 @@ if 'last_fetch_time' not in st.session_state:
 if time.time() - st.session_state.last_fetch_time > 1:  # Refresh every 10 seconds
     st.session_state.last_fetch_time = time.time()
     blynk_value = fetch_blynk_data()  # Fetch new data when time is up
+    st.rerun()  # Change made here
 else:
     blynk_value = None  # Do not fetch data if not time yet
 
