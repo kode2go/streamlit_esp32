@@ -10,7 +10,7 @@ BLYNK_VPIN = "V4"  # The virtual pin you're using
 fetched_values = []
 
 def fetch_blynk_data():
-    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&vpin={BLYNK_VPIN}"
+    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&{BLYNK_VPIN}"
     try:
         response = requests.get(url)
         # Debugging output: print status code and content
