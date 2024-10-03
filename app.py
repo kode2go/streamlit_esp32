@@ -1,12 +1,16 @@
 import streamlit as st
 import requests
+import matplotlib.pyplot as plt
 
 # Blynk configuration
-BLYNK_AUTH_TOKEN = "_Tx2yYYTCFm4Q0tzfLZmc_87QBkEdxYt" # Replace with your Blynk token
+BLYNK_AUTH_TOKEN = "_Tx2yYYTCFm4Q0tzfLZmc_87QBkEdxYt"  # Replace with your Blynk token
 BLYNK_VPIN = "V4"  # The virtual pin you're using
 
+# List to store fetched values for plotting
+fetched_values = []
+
 def fetch_blynk_data():
-    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&{BLYNK_VPIN}"
+    url = f"https://ny3.blynk.cloud/external/api/get?token={BLYNK_AUTH_TOKEN}&vpin={BLYNK_VPIN}"
     try:
         response = requests.get(url)
         # Debugging output: print status code and content
@@ -36,5 +40,27 @@ else:
 # Display the fetched value
 if blynk_value is not None:
     st.write(f"Value from Blynk (V4): {blynk_value}")
+    # Store the fetched value for plotting
+    try:
+        fetched_values.append(float(blynk_value))  # Convert to float for the gauge and plot
+    except ValueError:
+        st.write("Invalid data received from Blynk, unable to convert to float.")
 else:
     st.write("Failed to fetch data from Blynk.")
+
+# Gauge Display
+if fetched_values:
+    st.subheader("Gauge")
+    st.metric(label="Blynk Value", value=fetched_values[-1])  # Display the latest value as a gauge
+
+# Plotting the values
+if len(fetched_values) > 1:
+    st.subheader("Value Trend")
+    plt.figure(figsize=(10, 5))
+    plt.plot(fetched_values, marker='o')
+    plt.title("Blynk Value Over Time")
+    plt.xlabel("Fetch Number")
+    plt.ylabel("Value")
+    plt.grid()
+    st.pyplot(plt)
+
